@@ -1,26 +1,240 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f5eedc;          /* light beige page */
+  --paper-card: #fffaee;     /* slightly lighter for frames */
+  --ink: #2b2620;            /* pencil/pen color */
+  --ink-soft: #5c544a;
+  --grid: rgba(43, 38, 32, 0.05);
+  --marker-yellow: #ffe17a;
+  --marker-pink: #ffb3a7;
+  --marker-blue: #a9d1ff;
+  --marker-green: #b8e6a6;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --font-sans: var(--font-body);
+  --font-hand: var(--font-heading);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+}
+
+/* Height of the fixed nav bar. Sections pad their top by this much so their
+   content is centered in the visible area below the nav, not the full viewport. */
+:root {
+  --nav-h: 4.5rem;
+}
+
+.page-section {
+  min-height: 100svh;
+  padding-top: calc(var(--nav-h) + 2rem);
+  padding-bottom: 2rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* faint sketchbook grid */
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+  font-family: var(--font-body), "Comic Sans MS", cursive;
+  font-size: 1.15rem;
+}
+
+/* In the base layer so Tailwind utilities (e.g. text-3xl) can override them */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading), cursive;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  h1 { font-size: clamp(3rem, 8vw, 5.5rem); }
+  h2 { font-size: clamp(2.5rem, 5vw, 3.5rem); }
+  h3 { font-size: 1.9rem; }
+}
+
+@layer components {
+  /* ---------- Sketchy frame ----------
+     The frame is drawn on pseudo-elements so the wobble filter
+     distorts only the outline, never the text inside. */
+  .doodle-box {
+    position: relative;
+    isolation: isolate;
+    padding: 1.5rem 1.75rem;
+  }
+
+  .doodle-box::before,
+  .doodle-box::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    filter: url(#doodle-wobble);
+  }
+
+  /* main stroke + card fill */
+  .doodle-box::before {
+    inset: 0;
+    z-index: -1;
+    background: var(--paper-card);
+    border: 2.5px solid var(--ink);
+    border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px;
+    box-shadow: 4px 5px 0 -1px var(--ink);
+  }
+
+  /* second, offset stroke for the "traced twice" look */
+  .doodle-box::after {
+    inset: 4px -3px -2px 3px;
+    border: 1.5px solid var(--ink);
+    border-radius: 18px 225px 18px 255px / 255px 18px 225px 18px;
+    opacity: 0.45;
+  }
+
+  /* ---------- Line boil ----------
+     On hover the outline flips between differently-seeded wobble filters,
+     like the jittery outlines in hand-drawn animation. */
+  .doodle-boil:hover::before,
+  .doodle-boil:hover::after,
+  .doodle-boil:focus-within::before,
+  .doodle-boil:focus-within::after {
+    animation: doodle-boil 0.36s steps(1) infinite;
+  }
+
+  @keyframes doodle-boil {
+    0%      { filter: url(#doodle-wobble); }
+    33.33%  { filter: url(#doodle-wobble-2); }
+    66.67%  { filter: url(#doodle-wobble-3); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .doodle-boil:hover::before,
+    .doodle-boil:hover::after,
+    .doodle-boil:focus-within::before,
+    .doodle-boil:focus-within::after {
+      animation: none;
+    }
+  }
+
+  /* cards tilt slightly, alternating, like stuck-on notes */
+  .doodle-tilt > *:nth-child(odd) { transform: rotate(-0.7deg); }
+  .doodle-tilt > *:nth-child(even) { transform: rotate(0.6deg); }
+  .doodle-tilt > * { transition: transform 0.2s ease; }
+  .doodle-tilt > *:hover { transform: rotate(0deg) scale(1.01); }
+
+  /* ---------- Buttons ---------- */
+  .doodle-btn {
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    padding: 0.5rem 1.4rem;
+    font-family: var(--font-heading), cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: transform 0.15s ease;
+  }
+
+  .doodle-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--marker-yellow);
+    border: 2.5px solid var(--ink);
+    border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+    box-shadow: 3px 4px 0 -1px var(--ink);
+    filter: url(#doodle-wobble);
+  }
+
+  .doodle-btn:hover { transform: translate(-1px, -2px) rotate(-1deg); }
+  .doodle-btn:active { transform: translate(2px, 2px); }
+  .doodle-btn.alt::before { background: var(--marker-pink); }
+
+  /* ---------- Tags / chips ---------- */
+  .doodle-tag {
+    display: inline-block;
+    padding: 0.05rem 0.7rem;
+    border: 2px solid var(--ink);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    background: var(--marker-blue);
+    font-size: 1rem;
+  }
+
+  .doodle-tags > li:nth-child(4n + 2) .doodle-tag { background: var(--marker-yellow); }
+  .doodle-tags > li:nth-child(4n + 3) .doodle-tag { background: var(--marker-pink); }
+  .doodle-tags > li:nth-child(4n + 4) .doodle-tag { background: var(--marker-green); }
+
+  /* ---------- Links ---------- */
+  .doodle-link {
+    text-decoration: underline wavy;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+  }
+
+  /* ---------- Scribble hover (see ScribbleLink.tsx) ---------- */
+  .scribble {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+  }
+
+  .scribble-svg {
+    position: absolute;
+    left: -8px;
+    top: -4px;
+    width: calc(100% + 16px);
+    height: calc(100% + 8px);
+    z-index: -1;
+    overflow: visible;
+    pointer-events: none;
+    filter: url(#doodle-wobble);
+  }
+
+  .scribble-svg path {
+    fill: none;
+    stroke: var(--marker-yellow);
+    stroke-width: 4.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* path is normalised to length 1, so 1 = fully hidden, 0 = fully drawn */
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.25s ease-in;
+  }
+
+  .scribble:hover .scribble-svg path,
+  .scribble:focus-visible .scribble-svg path {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.55s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scribble-svg path,
+    .scribble:hover .scribble-svg path {
+      transition: none;
+    }
+  }
+
+  /* ---------- Hand-drawn divider under the nav ---------- */
+  .doodle-line {
+    position: relative;
+  }
+
+  .doodle-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-bottom: 2.5px solid var(--ink);
+    filter: url(#doodle-wobble);
+  }
 }
