@@ -11,7 +11,7 @@ type SectionProps = {
 export default function Section({ id, title, children }: SectionProps) {
   return (
     <section id={id} className="page-section flex items-center px-6">
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="mx-auto w-full max-w-6xl">
         {title && (
           <h2 className="mb-10 inline-block">
             {title}

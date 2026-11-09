@@ -5,7 +5,7 @@ import { contact, profile } from "@/data/portfolio";
 export default function Contact() {
   return (
     <Section id="contact" title="Contact Me">
-      <div className="doodle-box mx-auto max-w-3xl px-8 py-12 text-center md:px-14">
+      <div className="doodle-box mx-auto max-w-3xl px-8 py-10 text-center md:px-14">
         <p className="font-hand text-4xl font-bold md:text-5xl">{contact.heading}</p>
 
         {/* Availability, as highlighter-marked labels */}
@@ -33,16 +33,16 @@ export default function Contact() {
         </div>
 
         {/* Email call-to-action with a hand-drawn arrow pointing at it */}
-        <div className="relative mt-12 inline-block">
+        <div className="relative mt-10 inline-block">
           <Arrow />
           <a href={`mailto:${contact.email}`} className="doodle-btn break-all">
             {contact.email}
           </a>
         </div>
 
-        <div className="mt-10">
+        <div className="mt-8 flex flex-wrap items-baseline justify-center gap-x-6 gap-y-2">
           <p className="text-ink-soft">or find me on</p>
-          <ul className="mt-2 flex justify-center gap-8">
+          <ul className="flex justify-center gap-6">
             {contact.links.map((l) => (
               <li key={l.label}>
                 <ScribbleLink
@@ -58,7 +58,7 @@ export default function Contact() {
           </ul>
         </div>
 
-        <p className="font-hand mt-10 text-3xl -rotate-3">– {profile.name}</p>
+        <p className="font-hand mt-6 text-3xl -rotate-3">– {profile.name}</p>
       </div>
     </Section>
   );
@@ -69,9 +69,9 @@ function Arrow() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute top-1/2 right-full mr-3 hidden -translate-y-full items-end gap-1 md:flex"
+      className="pointer-events-none absolute top-1/2 right-full mr-3 hidden -translate-y-2/3 items-end gap-1 md:flex"
     >
-      <span className="font-hand mb-6 -rotate-12 text-2xl text-ink-soft">say hi!</span>
+      <span className="font-hand mb-5 -rotate-12 text-2xl whitespace-nowrap text-ink-soft">say hi!</span>
       <svg
         viewBox="0 0 80 60"
         className="h-14 w-20"

@@ -24,6 +24,19 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Laptop-sized screens: scale the whole design down a notch.
+   Almost every size here (text, padding, gaps, nav height) is in rem,
+   so shrinking the root font size shrinks everything proportionally.
+   Phones/tablets (< 1024px) and big monitors keep the full 16px size. */
+@media (min-width: 1024px) and (max-width: 1535px),
+  (min-width: 1024px) and (max-height: 900px) {
+  html { font-size: 15px; }
+}
+
+@media (min-width: 1024px) and (max-height: 800px) {
+  html { font-size: 14px; }
+}
+
 /* Height of the fixed nav bar. Sections pad their top by this much so their
    content is centered in the visible area below the nav, not the full viewport. */
 :root {
