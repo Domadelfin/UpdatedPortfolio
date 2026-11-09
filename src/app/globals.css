@@ -63,6 +63,20 @@ body {
 
 /* In the base layer so Tailwind utilities (e.g. text-3xl) can override them */
 @layer base {
+  /* Tailwind v4 resets buttons to the default arrow cursor; show the hand on
+     everything clickable so it reads as clickable. */
+  button:not(:disabled),
+  [role="button"],
+  label:has(> input[type="radio"]),
+  label:has(> input[type="checkbox"]),
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
   h1,
   h2,
   h3 {
@@ -126,6 +140,15 @@ body {
     0%      { filter: url(#doodle-wobble); }
     33.33%  { filter: url(#doodle-wobble-2); }
     66.67%  { filter: url(#doodle-wobble-3); }
+  }
+
+  /* No jitter while the email form is open: neither on the form's own card
+     (it always has focus while typing) nor on the Contact card that contains it. */
+  .doodle-dialog .doodle-box::before,
+  .doodle-dialog .doodle-box::after,
+  .doodle-box:has(dialog[open])::before,
+  .doodle-box:has(dialog[open])::after {
+    animation: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -234,6 +257,53 @@ body {
     .scribble:hover .scribble-svg path {
       transition: none;
     }
+  }
+
+  /* ---------- Email draft dialog (EmailDraft.tsx) ----------
+     The <dialog> itself is just a transparent shell; the card inside is a .doodle-box. */
+  .doodle-dialog {
+    margin: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    overflow: visible;
+    max-height: calc(100svh - 2rem);
+  }
+
+  .doodle-dialog::backdrop {
+    background: rgba(43, 38, 32, 0.35);
+  }
+
+  .doodle-input {
+    width: 100%;
+    padding: 0.45rem 0.8rem;
+    background: #fff;
+    border: 2px solid var(--ink);
+    border-radius: 255px 12px 225px 12px / 12px 225px 12px 255px;
+    font: inherit;
+  }
+
+  .doodle-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--marker-yellow);
+  }
+
+  /* radio options styled as tags; highlighted when selected */
+  .doodle-choice {
+    cursor: pointer;
+    padding: 0.1rem 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    background: #fff;
+  }
+
+  .doodle-choice:has(input:checked) {
+    background: var(--marker-yellow);
+  }
+
+  .doodle-choice:has(input:focus-visible) {
+    box-shadow: 0 0 0 3px var(--marker-blue);
   }
 
   /* ---------- Hand-drawn divider under the nav ---------- */

@@ -227,6 +227,8 @@ export const contact = {
   message:
     "Whether you need a backend built, an app deployed to the cloud, or an extra pair of hands on your team, I'd love to hear about it. I'm open to freelance projects and full-time roles, so feel free to reach out and I'll get back to you as soon as I can.",
   openTo: ["Full-time roles", "Freelance projects"],
+  // Options in the email form; the chosen one becomes the email subject
+  topics: ["Full-time role", "Freelance project", "Just saying hi"],
   services: [
     "Backend development",
     "Full-stack web apps",

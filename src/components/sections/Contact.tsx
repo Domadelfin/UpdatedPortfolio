@@ -1,3 +1,4 @@
+import EmailDraft from "@/components/EmailDraft";
 import Section from "@/components/Section";
 import ScribbleLink from "@/components/ScribbleLink";
 import { contact, profile } from "@/data/portfolio";
@@ -35,9 +36,7 @@ export default function Contact() {
         {/* Email call-to-action with a hand-drawn arrow pointing at it */}
         <div className="relative mt-10 inline-block">
           <Arrow />
-          <a href={`mailto:${contact.email}`} className="doodle-btn break-all">
-            {contact.email}
-          </a>
+          <EmailDraft email={contact.email} topics={contact.topics} />
         </div>
 
         <div className="mt-8 flex flex-wrap items-baseline justify-center gap-x-6 gap-y-2">
