@@ -8,7 +8,7 @@ export default function Projects() {
     <Section id="projects" title="Projects">
       <ul className="doodle-tilt grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((p) => (
-          <li key={p.title} className="doodle-box doodle-boil flex flex-col px-8 py-7">
+          <li key={p.title} className="doodle-box flex flex-col px-8 py-7">
             {p.image && (
               <Image
                 src={p.image}

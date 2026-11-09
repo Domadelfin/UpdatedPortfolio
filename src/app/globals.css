@@ -100,12 +100,12 @@ body {
   }
 
   /* ---------- Line boil ----------
-     On hover the outline flips between differently-seeded wobble filters,
+     On hover a card's outline flips between differently-seeded wobble filters,
      like the jittery outlines in hand-drawn animation. */
-  .doodle-boil:hover::before,
-  .doodle-boil:hover::after,
-  .doodle-boil:focus-within::before,
-  .doodle-boil:focus-within::after {
+  .doodle-box:hover::before,
+  .doodle-box:hover::after,
+  .doodle-box:focus-within::before,
+  .doodle-box:focus-within::after {
     animation: doodle-boil 0.36s steps(1) infinite;
   }
 
@@ -116,10 +116,10 @@ body {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .doodle-boil:hover::before,
-    .doodle-boil:hover::after,
-    .doodle-boil:focus-within::before,
-    .doodle-boil:focus-within::after {
+    .doodle-box:hover::before,
+    .doodle-box:hover::after,
+    .doodle-box:focus-within::before,
+    .doodle-box:focus-within::after {
       animation: none;
     }
   }

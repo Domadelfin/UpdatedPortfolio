@@ -1,7 +1,7 @@
 // Hidden SVG filters used by the .doodle-* classes in globals.css.
 // Each one slightly displaces straight lines so borders look hand-drawn.
 // "doodle-wobble" is the resting look; the -2/-3 variants use different noise seeds
-// and are cycled through by .doodle-boil on hover to make the outline jitter.
+// and are cycled through when a .doodle-box card is hovered, making the outline jitter.
 const filters = [
   { id: "doodle-wobble", seed: 3 },
   { id: "doodle-wobble-2", seed: 8 },
