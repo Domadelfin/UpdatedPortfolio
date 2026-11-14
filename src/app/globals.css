@@ -166,6 +166,41 @@ body {
   .doodle-tilt > * { transition: transform 0.2s ease; }
   .doodle-tilt > *:hover { transform: rotate(0deg) scale(1.01); }
 
+  /* ---------- Polaroid photo (Hero) ----------
+     White photo-paper border, a slight tilt and a strip of washi tape on top. */
+  .polaroid {
+    position: relative;
+    padding: 0.55rem 0.55rem 1.6rem;
+    background: #fff;
+    border: 2px solid var(--ink);
+    box-shadow: 4px 5px 0 -1px var(--ink);
+    transform: rotate(-4deg);
+    transition: transform 0.2s ease;
+  }
+
+  .polaroid img {
+    border: 1.5px solid var(--ink);
+  }
+
+  .polaroid::after {
+    content: "";
+    position: absolute;
+    top: -0.8rem;
+    left: 50%;
+    width: 4.5rem;
+    height: 1.5rem;
+    translate: -50% 0;
+    rotate: 6deg;
+    background: var(--marker-blue);
+    opacity: 0.8;
+    border: 1.5px solid var(--ink);
+    filter: url(#doodle-wobble);
+  }
+
+  .polaroid:hover {
+    transform: rotate(-1deg) scale(1.03);
+  }
+
   /* ---------- Buttons ---------- */
   .doodle-btn {
     position: relative;
@@ -270,6 +305,74 @@ body {
     color: var(--ink);
     overflow: visible;
     max-height: calc(100svh - 2rem);
+  }
+
+  /* Keep the page behind an open popup from scrolling */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
+  /* ---------- Hand-drawn scroll area (DoodleScroll.tsx) ----------
+     The browser scrollbar is hidden and a pencil track + marker thumb is drawn
+     instead. Content fades out at the top and bottom edges rather than being
+     cut off at the frame. */
+  .doodle-scroll {
+    --fade: 1.75rem;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-block: var(--fade);
+    padding-right: 1.75rem; /* room for the drawn scrollbar */
+    scrollbar-width: none;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 var(--fade),
+      #000 calc(100% - var(--fade)),
+      transparent
+    );
+  }
+
+  .doodle-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* the track: a faint pencil line, lined up with the un-faded part of the content */
+  .doodle-scrollbar {
+    position: absolute;
+    top: 1.75rem;
+    bottom: 1.75rem;
+    right: 0.2rem;
+    width: 0.7rem;
+    cursor: pointer;
+  }
+
+  .doodle-scrollbar::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 50%;
+    border-left: 2px dashed var(--ink-soft);
+    opacity: 0.45;
+    filter: url(#doodle-wobble);
+  }
+
+  /* the thumb: a marker-yellow pill with an inked, wobbly outline */
+  .doodle-scrollbar-thumb {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: var(--marker-yellow);
+    border: 2px solid var(--ink);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    box-shadow: 2px 2px 0 -0.5px var(--ink);
+    filter: url(#doodle-wobble);
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .doodle-scrollbar-thumb:active {
+    cursor: grabbing;
+    background: var(--marker-pink);
   }
 
   .doodle-dialog::backdrop {

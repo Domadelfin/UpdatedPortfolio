@@ -1,9 +1,11 @@
+import NavHeightSync from "@/components/NavHeightSync";
 import ScribbleLink from "@/components/ScribbleLink";
 import { profile, sections } from "@/data/portfolio";
 
 export default function Navbar() {
   return (
     <header className="doodle-line fixed inset-x-0 top-0 z-10 bg-paper">
+      <NavHeightSync />
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-3">
         <a href="#home" className="font-hand text-3xl font-bold whitespace-nowrap">
           {profile.name}

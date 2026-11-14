@@ -3,6 +3,13 @@
 import type { StaticImageData } from "next/image";
 import awsAiPractitioner from "@/app/Images/AWS AI practitioner.png";
 import ccnaItn from "@/app/Images/CCNA Introduction to Networks.png";
+import gradPhoto from "@/app/Images/Grad Photo.jpg";
+import aimGcfShot from "@/app/Images/AIMGCF.png";
+import duyogShot from "@/app/Images/Duyog2025.png";
+import samahanShot from "@/app/Images/OTM-Samahan.png";
+import luckyInLoveShot from "@/app/Images/SpeedDating.png";
+import univentsShot from "@/app/Images/Univents.png";
+import wifiShot from "@/app/Images/Wifi Occupancy Prediction.png";
 
 export type Education = {
   school: string;
@@ -15,20 +22,30 @@ export type Experience = {
   role: string;
   organization: string;
   period: string;
+  kind: "work" | "volunteer";
+  focus: string; // what kind of work, e.g. "DevOps" or "Full-stack"; shown as a label
   location?: string;
   highlights: string[];
 };
 
 export type Project = {
   title: string;
-  description: string;
-  tech: string[];
-  repoUrl?: string;
+  date: string;
+  role: string; // my part in it, shown as a label on the card
+  summary: string; // two sentences on the card, focused on what I did
+  image: StaticImageData; // screenshot, imported from src/app/Images
+  tech: string[]; // names matching TechTag.tsx get a logo
   liveUrl?: string;
-  date?: string;
-  summary?: string; // two-sentence summary shown on the card
-  note?: string; // small extra line, e.g. demo login
-  image?: StaticImageData; // import from src/app/Images
+  repoUrl?: string;
+  note?: string; // private note, not shown on the site
+  // Shown in the popup when the card is clicked
+  caseStudy: {
+    problem: string;
+    contributions: string[];
+    decisions?: string[];
+    // Measurable outcomes. The first one is also shown on the card, so keep it short.
+    results?: string[];
+  };
 };
 
 export type SkillGroup = {
@@ -54,7 +71,10 @@ export const profile = {
   title: "Software Engineer | Backend, Cloud & DevOps",
   // Served from /public; the download attribute gives the saved file a clean name
   resume: { href: "/Delfin-Resume.pdf", fileName: "Dominic Delfin - Resume.pdf" },
-  summary: "I'm a Computer Science graduate and aspiring Software Engineer with a strong interest in backend development, cloud computing, and DevOps. I enjoy building practical, scalable applications and working across the development lifecycle, from designing backend systems and integrating APIs to deployment and infrastructure management. With experience in technologies such as Django, Laravel, Next.js, React, and Docker, I'm continuously expanding my skills in AWS and cloud technologies. I'm passionate about continuous learning, solving real-world problems, and building reliable software that makes a meaningful impact.",
+  photo: gradPhoto,
+  tagline: "I build and deploy web apps for organizations and clients, from the backend all the way to the cloud.",
+  summary:
+    "I've shipped production systems for SAMAHAN and Arisen Labs, including the SAMAHAN website, the Duyog 2025 event site and the AIM Global Citizenship platform. I work across the stack with Django, Laravel and Next.js, and handle the Docker, CI/CD and server setup that gets them live.",
 };
 
 export const education: Education[] = [
@@ -66,41 +86,50 @@ export const education: Education[] = [
   },
 ];
 
-export const workExperience: Experience[] = [
-  {
-    role: "DevOps Engineer",
-    organization: "SAMAHAN Systems Development · Ateneo de Davao University",
-    period: "Aug 2025 – Apr 2026",
-    highlights: [
-      "Kept apps running in staging and production with Docker and Docker Compose",
-      "Set up the servers and deployment pipelines that took projects from merge to release",
-    ],
-  },
-  {
-    role: "Intern",
-    organization: "Arisen Labs · Ateneo de Davao University",
-    period: "May – Jul 2025",
-    highlights: [
-      "Built frontend pages and backend features for a full-stack Laravel + Vue + TypeScript system",
-      "Worked in an agile team and got comfortable debugging issues end to end",
-    ],
-  },
-];
-
-export const volunteerExperience: Experience[] = [
+// Work and volunteering in one timeline, newest first.
+export const experience: Experience[] = [
   {
     role: "Head, Merch Design Team",
     organization: "PyCon Davao 2026 · organized by DurianPy",
     period: "2026",
+    kind: "volunteer",
+    focus: "Leadership · Design",
     highlights: [
       "Led the merch design team and made sure every design stayed true to the event's theme",
       "Checked that sponsor logos on the merch followed each sponsor's brand guidelines",
     ],
   },
   {
+    role: "Full-stack Developer",
+    organization: "Arisen Labs · for AdDU's AIM Office",
+    period: "Aug 2025 – Jul 2026",
+    kind: "work",
+    focus: "Full-stack · Freelance, part-time",
+    highlights: [
+      "Asked back by the AIM director after the internship to build V2 of the Global Citizenship platform",
+      "Built frontend and backend features for V2 around the office's new requirements, part-time alongside my final year of studies",
+      "Finished my part of V2, which is now waiting to be deployed",
+    ],
+  },
+  {
+    role: "DevOps Engineer",
+    organization: "SAMAHAN Systems Development · AdDU Student Government",
+    period: "Aug 2025 – Apr 2026",
+    kind: "work",
+    focus: "DevOps",
+    highlights: [
+      "Deployed and maintained production sites with Docker, Docker Compose and Nginx, including the new SAMAHAN website",
+      "Built the GitHub Actions CI/CD pipeline for Duyog 2025, the UFest site used by roughly 1,000–2,000 people",
+      "Added uptime monitoring with UptimeRobot after free-tier outages, and the site hardly went down after that",
+      "Redeployed the SAMAHAN website whenever the dev team pushed changes, so updates reached production quickly",
+    ],
+  },
+  {
     role: "Technical Head",
     organization: "NASA Space Apps Challenge 2025",
     period: "2025",
+    kind: "volunteer",
+    focus: "Leadership",
     highlights: [
       "Led the technical committee and split the work based on each member's strengths",
     ],
@@ -109,8 +138,22 @@ export const volunteerExperience: Experience[] = [
     role: "Creatives Member",
     organization: "DurianPy",
     period: "2025 – Present",
+    kind: "volunteer",
+    focus: "Design",
     highlights: [
       "Design event banners, social media graphics and promo materials for workshops and meetups",
+    ],
+  },
+  {
+    role: "Full-stack Developer Intern",
+    organization: "Arisen Labs",
+    period: "May – Jul 2025",
+    kind: "work",
+    focus: "Full-stack",
+    highlights: [
+      "Built frontend pages and backend features for the AIM Global Citizenship platform (Laravel, Vue, TypeScript)",
+      "Led its email system, designing the templates and sending them with Laravel's mailer",
+      "The platform has taken 500+ applications and is still used by AdDU's AIM office",
     ],
   },
 ];
@@ -120,64 +163,157 @@ export const projects: Project[] = [
   {
     title: "Lucky in Love",
     date: "February 2026",
+    role: "Solo · Concept to deployment",
+    image: luckyInLoveShot,
     summary:
-      "A speed-dating web app that handles sign-ups, compatibility questionnaires and the live event flow. Matches are made with a weighted graph algorithm that pairs people by mutual compatibility.",
-    description:
-      "Runs a speed-dating event from start to finish: participant sign-up, preference and compatibility questionnaires, and live event flow. Matches are generated with a weighted graph algorithm (NetworkX) that finds the best mutual pairs, and admins control the event status and when matches are revealed.",
+      "I built this speed-dating web app on my own in two weeks, from the first concept to the live deployment. That included researching matching algorithms and building a weighted graph that pairs people by mutual compatibility.",
     tech: ["Django", "PostgreSQL", "Tailwind CSS", "NetworkX", "Railway"],
     repoUrl: "https://github.com/Domadelfin/UmaNeskaSpeedDating",
+    caseStudy: {
+      problem:
+        "A speed-dating event needed one app to handle sign-ups, compatibility questionnaires and fair matches for its live rounds, and it had to be ready in two weeks.",
+      contributions: [
+        "Planned, designed, built and deployed the whole app myself",
+        "Researched matching algorithms and chose the best fit for the deadline",
+        "Built participant sign-up and the preference and compatibility questionnaires",
+        "Built the matching engine as a weighted graph with NetworkX, pairing people by mutual compatibility",
+        "Added admin controls for the event status and for when matches are revealed",
+        "Deployed it on Railway with a PostgreSQL database",
+      ],
+      decisions: [
+        "Scored every pair on mutual compatibility, so a match only ranks high when it works for both people",
+        "Gave admins control over when matches are revealed, so the app follows the pace of the live event",
+      ],
+      results: [
+        "About 50 participants matched at the live event",
+        "Went from idea to live in two weeks, built solo",
+      ],
+    },
   },
   {
     title: "On The Move: SAMAHAN Website",
     date: "February 2026",
+    role: "DevOps · Deployment & upkeep",
+    image: samahanShot,
     summary:
-      "The new SAMAHAN website, containerized with Docker and deployed to a production VPS behind Nginx. I also moved the live domain from the old frontend to the new one, alongside the server's existing services.",
-    description:
-      "Containerized the new Next.js frontend with Docker and deployed it to a production VPS alongside existing services. Set up Nginx as the reverse proxy, fixed communication between containers on separate Docker networks, and switched the live domain over from the old frontend to the new one.",
-    tech: ["Docker", "Nginx", "Linux VPS", "DNS"],
-    liveUrl: "https://samahan.addu.edu.ph/",
+      "I deployed SAMAHAN's new website to a production Linux server with Docker and Nginx, alongside the services already running there. I kept it up to date afterwards, redeploying whenever the dev team pushed changes.",
+    tech: ["Docker", "Nginx", "Linux", "DNS"],
+    // The site is down (502) right now. Put the link back once it's up again:
+    // liveUrl: "https://samahan.addu.edu.ph/",
+    caseStudy: {
+      problem:
+        "SAMAHAN's new Next.js website had to replace the old one on a production server that was already running other services, without disrupting them.",
+      contributions: [
+        "Containerized the new Next.js frontend with Docker",
+        "Deployed it to the production VPS with Linux commands, next to the existing services",
+        "Set up Nginx as the reverse proxy",
+        "Fixed communication between containers on separate Docker networks",
+        "Switched the live domain from the old frontend to the new one",
+        "Redeployed the site whenever the dev team pushed changes to the repository",
+      ],
+      decisions: [
+        "Ran the site in its own container behind Nginx, so it could be updated without touching the other services on the server",
+      ],
+    },
   },
   {
     title: "WiFi Occupancy Prediction",
     date: "November 2025",
+    role: "Full-stack · Model integration",
+    image: wifiShot,
     summary:
-      "Predicts how full each university library is from Wi-Fi signals, using CNN and LSTM models served through a Django REST API. A Next.js dashboard shows live and date-specific forecasts in interactive charts.",
-    description:
-      "A full-stack platform that turns Wi-Fi client signals into per-library occupancy predictions. Trained CNN and LSTM models are served through a Django REST API, with endpoints for live and date-specific forecasts shown in a Next.js dashboard. An admin view compares model versions and promotes the most accurate one.",
+      "I built most of this platform, a Django REST API and Next.js dashboard that predicts how full each library is from Wi-Fi data. I also exported the trained CNN and LSTM models into the site and set them up to retrain as new data is logged.",
     tech: ["Next.js", "Django", "CNN / LSTM"],
     liveUrl: "https://wifi-occupancy-prediction-five.vercel.app/",
+    caseStudy: {
+      problem:
+        "Students had no way to know how crowded each library area was before walking over. The team had Wi-Fi client data and trained models, but nothing that put predictions in front of people.",
+      contributions: [
+        "Handled most of the full-stack development",
+        "Built the Django REST API with endpoints for live and date-specific forecasts",
+        "Built the Next.js dashboard that shows occupancy per library area",
+        "Exported the trained CNN and LSTM models as artifacts and loaded them into the backend",
+        "Set up retraining as new data is logged in the site, so it can forecast the coming days and weeks",
+        "Built an admin view that compares model versions and promotes the most accurate one",
+      ],
+      decisions: [
+        "Retrained the models on newly logged data, so forecasts reflect recent patterns",
+        "Kept model versions side by side, so a new model only goes live if it beats the current one",
+      ],
+    },
   },
   {
     title: "Duyog 2025",
     date: "October 2025",
+    role: "DevOps · CI/CD, hosting & monitoring",
+    image: duyogShot,
     summary:
-      "The deployment pipeline and hosting for the SAMAHAN UFest Palaro 2025 website, built on GitHub Actions and Render. It kept event schedules, activities and ticket info fast and reliable for the AdDU community.",
-    description:
-      "DevOps work for the UFest Palaro 2025 website: a CI/CD pipeline with GitHub Actions and a tuned hosting setup on Render, so schedules, activities and ticket info reached the AdDU community quickly and reliably.",
-    tech: ["GitHub Actions", "Render"],
+      "I handled the DevOps for the Ateneo UFest 2025 website's frontend, from the GitHub Actions CI/CD pipeline to deployment on Render. It ran on Render's free tier, so I set up UptimeRobot to ping it and keep it awake and monitored.",
+    tech: ["GitHub Actions", "Render", "UptimeRobot"],
     liveUrl: "https://duyog2025.addu.edu.ph/",
+    caseStudy: {
+      problem:
+        "The UFest site was where the AdDU community found the event schedule, activities and the link to ticket sales, so it had to stay up during the event, on a free hosting plan that puts idle sites to sleep.",
+      contributions: [
+        "Built the CI/CD pipeline with GitHub Actions",
+        "Deployed the frontend and configured its hosting on Render",
+        "Noticed the site going down at times on the free tier, and set up UptimeRobot to ping it regularly",
+        "Monitored the site throughout the event",
+      ],
+      decisions: [
+        "Kept the free tier and used scheduled pings to avoid cold starts, so the event got reliable hosting at no cost",
+      ],
+      results: [
+        "Roughly 1,000–2,000 users during UFest",
+        "Hardly any downtime after adding the UptimeRobot pings",
+      ],
+    },
   },
   {
     title: "AIM Global Citizenship System",
     date: "September 2025",
+    role: "Full-stack · Email system lead",
+    image: aimGcfShot,
     summary:
-      "A platform for AdDU students applying to international mobility programs, from submission and document checks to committee evaluation and approval. I worked across the stack, building frontend pages, backend endpoints and workflow automation.",
-    description:
-      "A central platform for student applications to international mobility programs, covering the whole workflow: submission, document checks, committee evaluation and final approval. I worked across the stack and the UI, building frontend pages, backend endpoints and workflow automation for students, staff, committee members and directors.",
+      "On a team where everyone worked full-stack, I built frontend pages and backend features for AdDU's international mobility application platform. I was also in charge of its emails, designing the templates and sending them with Laravel's built-in mailer.",
     tech: ["Laravel", "Vue", "Inertia.js"],
     liveUrl: "https://gcf.arisenlab.org/",
+    caseStudy: {
+      problem:
+        "Applications for international mobility programs went through several hands (students, staff, committee members and directors) and needed one platform to carry them from submission to approval.",
+      contributions: [
+        "Built frontend pages and backend endpoints as part of a full-stack team",
+        "Worked on workflow automation for submission, document checks, evaluation and approval",
+        "Led the email system: designed the email templates and handled sending with Laravel's mailer",
+        "Was brought back after the internship to build V2 around the AIM office's new requirements (finished, not yet deployed)",
+      ],
+      results: [
+        "500+ applications submitted through it (as of Sept 2025)",
+        "Still in use by AdDU's AIM office",
+      ],
+    },
   },
   {
     title: "Univents Admin",
     date: "May 2025",
+    role: "Full-stack · Built from a teammate's design",
+    image: univentsShot,
     summary:
-      "The admin panel of a campus event-tracking app for Ateneo de Davao University, used to manage events, organizations and attendance. Admins sign in with Google, and only accounts registered as admins can get in.",
-    description:
-      "The admin side of an event-tracking app for Ateneo de Davao University. Admins manage events and the organizations behind them, and see who attended. Sign-in uses Google, and only accounts registered as admins in the database can get in.",
-    note: "Guest login: admin@addu.edu.ph / admin123",
-    tech: ["Dart", "Google Sign-In"],
+      "I did most of the full-stack development for the admin panel of a campus event-tracking app, turning a teammate's designs into working screens. Admins sign in with Google and manage events, organizations and attendance.",
+    tech: ["Flutter", "Dart", "Google Sign-In"],
     liveUrl: "https://univents-web.vercel.app/",
     repoUrl: "https://github.com/Domadelfin/school-event-finder",
+    note: "Guest login: admin@addu.edu.ph / admin123",
+    caseStudy: {
+      problem:
+        "Ateneo de Davao organizations needed one place to post events and track attendance, with access limited to approved admins.",
+      contributions: [
+        "Handled most of the full-stack development",
+        "Turned a teammate's designs into working screens",
+        "Built event and organization management and the attendance views",
+        "Set up Google sign-in, limited to accounts registered as admins",
+      ],
+    },
   },
 ];
 
