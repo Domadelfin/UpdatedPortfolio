@@ -52,6 +52,8 @@ export type ContactLink = {
 export const profile = {
   name: "Dom",
   title: "Software Engineer | Backend, Cloud & DevOps",
+  // Served from /public; the download attribute gives the saved file a clean name
+  resume: { href: "/Delfin-Resume.pdf", fileName: "Dominic Delfin - Resume.pdf" },
   summary: "I'm a Computer Science graduate and aspiring Software Engineer with a strong interest in backend development, cloud computing, and DevOps. I enjoy building practical, scalable applications and working across the development lifecycle, from designing backend systems and integrating APIs to deployment and infrastructure management. With experience in technologies such as Django, Laravel, Next.js, React, and Docker, I'm continuously expanding my skills in AWS and cloud technologies. I'm passionate about continuous learning, solving real-world problems, and building reliable software that makes a meaningful impact.",
 };
 

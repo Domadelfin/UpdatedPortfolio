@@ -18,6 +18,15 @@ export default function Navbar() {
                 </ScribbleLink>
               </li>
             ))}
+          <li>
+            <ScribbleLink
+              href={profile.resume.href}
+              download={profile.resume.fileName}
+              className="font-bold whitespace-nowrap"
+            >
+              Resume ↓
+            </ScribbleLink>
+          </li>
         </ul>
       </nav>
     </header>

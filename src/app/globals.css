@@ -193,6 +193,7 @@ body {
   .doodle-btn:hover { transform: translate(-1px, -2px) rotate(-1deg); }
   .doodle-btn:active { transform: translate(2px, 2px); }
   .doodle-btn.alt::before { background: var(--marker-pink); }
+  .doodle-btn.green::before { background: var(--marker-green); }
 
   /* ---------- Tags / chips ---------- */
   .doodle-tag {

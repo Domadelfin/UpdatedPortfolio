@@ -19,6 +19,9 @@ export default function Hero() {
             <a href="#contact" className="doodle-btn alt">
               Contact me
             </a>
+            <a href={profile.resume.href} download={profile.resume.fileName} className="doodle-btn green">
+              ↓ Download resume
+            </a>
           </div>
         </div>
         <EducationCard />
