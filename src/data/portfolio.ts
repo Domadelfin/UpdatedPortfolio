@@ -329,18 +329,6 @@ export const skills: SkillGroup[] = [
     category: "DevOps & Cloud",
     items: ["AWS", "Docker", "Nginx", "Linux", "Vercel", "Railway", "Render"],
   },
-  { category: "Design", items: ["Figma", "Canva"] },
-  {
-    category: "Soft Skills",
-    items: [
-      "Communication",
-      "Teamwork",
-      "Problem-Solving",
-      "Organization",
-      "Adaptability",
-      "Time Management",
-    ],
-  },
 ];
 
 export const certifications: Certification[] = [
@@ -385,8 +373,7 @@ export const sections = [
   { id: "home", label: "Home" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
-  { id: "skills", label: "Skills" },
-  { id: "certifications", label: "Certifications" },
+  { id: "skills", label: "Skills & Certs" },
   { id: "contact", label: "Contact" },
 ] as const;
 
