@@ -15,7 +15,7 @@ export default function Experience() {
         />
 
         <ol className="grid gap-8">
-          {experience.map((x, i) => (
+          {experience.map((x) => (
             <li key={x.role + x.organization} className="grid grid-cols-[1.25rem_1fr] gap-4 md:grid-cols-[1.75rem_1fr] md:gap-6">
               <span
                 aria-hidden="true"
@@ -25,7 +25,7 @@ export default function Experience() {
                 style={{ filter: "url(#doodle-wobble)" }}
               />
 
-              <article className={`doodle-box ${i % 2 ? "rotate-[0.4deg]" : "-rotate-[0.4deg]"}`}>
+              <article className="doodle-box transition-transform duration-200 hover:-translate-y-[3px]">
                 <div className="flex flex-wrap items-baseline justify-between gap-x-4">
                   <h3 className="text-[1.75rem]">{x.role}</h3>
                   <p className="text-ink-soft">{x.period}</p>

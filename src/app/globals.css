@@ -164,7 +164,13 @@ body {
   .doodle-tilt > *:nth-child(odd) { transform: rotate(-0.7deg); }
   .doodle-tilt > *:nth-child(even) { transform: rotate(0.6deg); }
   .doodle-tilt > * { transition: transform 0.2s ease; }
-  .doodle-tilt > *:hover { transform: rotate(0deg) scale(1.01); }
+  /* On hover the card straightens and lifts. No scale(): resizing by a fraction
+     of a percent makes Chrome resample the text, which looks blurry. */
+  .doodle-tilt > *:hover { transform: translateY(-3px); }
+
+  /* Text-heavy cards stay level (rotated text renders slightly soft) but keep the hover lift */
+  .doodle-tilt > .doodle-straight { transform: none; }
+  .doodle-tilt > .doodle-straight:hover { transform: translateY(-3px); }
 
   /* ---------- Polaroid photo (Hero) ----------
      White photo-paper border, a slight tilt and a strip of washi tape on top. */

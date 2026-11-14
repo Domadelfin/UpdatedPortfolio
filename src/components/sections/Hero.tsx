@@ -8,7 +8,7 @@ export default function Hero() {
     <Section id="home">
       {/* Intro on the left, education on the right; stacked on smaller screens */}
       <div className="doodle-tilt grid items-center gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <div className="doodle-box px-8 py-10 text-center md:px-12">
+        <div className="doodle-box doodle-straight px-8 py-10 text-center md:px-12">
           {/* Photo beside the name on wider screens, above it on phones */}
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-10 md:text-left">
             <Polaroid />

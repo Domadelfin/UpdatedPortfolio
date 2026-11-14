@@ -16,7 +16,7 @@ export default function ProjectCard({ project: p }: { project: Project }) {
   const close = () => dialogRef.current?.close();
 
   return (
-    <li className="doodle-box group/card relative flex flex-col px-7 py-6">
+    <li className="doodle-box doodle-straight group/card relative flex flex-col px-7 py-6">
       {/* Invisible button covering the whole card; the links below sit above it */}
       <button
         type="button"
