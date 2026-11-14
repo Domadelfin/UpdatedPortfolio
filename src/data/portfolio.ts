@@ -340,7 +340,7 @@ export const certifications: Certification[] = [
     date: "09/14/2026 - 09/14/2029",
   },
   {
-    name: "CCNA: Introduction to Networks",
+    name: "Introduction to Networks",
     issuer: "Cisco Networking Academy",
     image: ccnaItn,
     credentialUrl: "https://www.credly.com/badges/7ea58f0c-798a-4376-8176-8acbc483a840",
