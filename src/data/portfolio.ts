@@ -10,6 +10,14 @@ import samahanShot from "@/app/Images/OTM-Samahan.png";
 import luckyInLoveShot from "@/app/Images/SpeedDating.png";
 import univentsShot from "@/app/Images/Univents.png";
 import wifiShot from "@/app/Images/Wifi Occupancy Prediction.png";
+// Job Tracker on AWS. Account IDs in these screenshots are already blacked out.
+import jtApp from "@/app/Images/Job Tracker/01-app-via-alb.png";
+import jtEcs from "@/app/Images/Job Tracker/02-ecs-cluster-services.png";
+import jtRdsNetworking from "@/app/Images/Job Tracker/04-rds-networking.png";
+import jtDbSecurityGroup from "@/app/Images/Job Tracker/06-db-security-group.png";
+import jtCrashLog from "@/app/Images/Job Tracker/08-backend-log-failure-eacces.png";
+import jtFixedLog from "@/app/Images/Job Tracker/09-backend-log-success.png";
+import jtVpcMap from "@/app/Images/Job Tracker/10-vpc-resource-map.png";
 
 export type Education = {
   school: string;
@@ -45,6 +53,8 @@ export type Project = {
     decisions?: string[];
     // Measurable outcomes. The first one is also shown on the card, so keep it short.
     results?: string[];
+    // Extra screenshots shown at the bottom of the case study
+    gallery?: { image: StaticImageData; caption: string }[];
   };
 };
 
@@ -160,6 +170,47 @@ export const experience: Experience[] = [
 
 // Newest first.
 export const projects: Project[] = [
+  {
+    title: "Job Tracker on AWS",
+    date: "November 2026",
+    role: "Solo · Cloud architecture & deployment",
+    image: jtApp,
+    summary:
+      "A side project to practice AWS: I built a full-stack job tracker and deployed it with ECS Fargate, a private RDS database, Secrets Manager and least-privilege IAM, all in Terraform. I split the infrastructure so the billable part only exists while I need it, which brings the cost down to about $0.09 an hour.",
+    tech: ["Terraform", "ECS Fargate", "RDS", "Docker", "Next.js", "Express.js"],
+    repoUrl: "https://github.com/Domadelfin/job-tracker",
+    caseStudy: {
+      problem:
+        "I wanted hands-on practice with a production-style AWS setup (a custom VPC, containers behind a load balancer, a database that's never public, managed secrets and least-privilege IAM) without paying the roughly $110 a month it costs to run all the time.",
+      contributions: [
+        "Built the app (Next.js frontend, Express API, PostgreSQL) and ran it locally with Docker Compose",
+        "Defined everything in Terraform, starting with a custom VPC: public, private-app and private-db subnets across 2 Availability Zones",
+        "Deployed both services to ECS Fargate behind an Application Load Balancer, with images in ECR",
+        "Kept the database private: no public IP, no route to the internet, and only the backend's security group can reach it",
+        "Kept secrets out of code: RDS generates the password in Secrets Manager and ECS injects it at startup",
+        "Gave each service its own narrowly scoped IAM roles, and the app code no permissions at all",
+        "Traced a production-only crash through CloudWatch Logs to a file-permission bug in the Docker image, then added a build-time check so it can't ship again",
+      ],
+      decisions: [
+        "Split Terraform into a free foundation layer that stays up and a billable runtime layer I create and destroy per session",
+        "Used a NAT instance instead of a NAT Gateway (about $43 a month saved) and Fargate Spot",
+        "When the account's guardrails blocked GitHub OIDC, pushed images with short-lived credentials instead of storing a long-lived access key",
+      ],
+      results: [
+        "About $0.09/hour to run, vs ~$110/month always-on",
+        "Caught a CRITICAL CVE with ECR scanning and patched it before deploying",
+        "Database confirmed unreachable from the internet",
+      ],
+      gallery: [
+        { image: jtVpcMap, caption: "The custom VPC: 3 subnet tiers across 2 Availability Zones" },
+        { image: jtEcs, caption: "Frontend and backend services running on ECS Fargate" },
+        { image: jtRdsNetworking, caption: "RDS in private subnets, not publicly accessible" },
+        { image: jtDbSecurityGroup, caption: "The database accepts connections from the backend only" },
+        { image: jtCrashLog, caption: "The production crash, found in CloudWatch Logs" },
+        { image: jtFixedLog, caption: "After the fix: the backend starts up cleanly" },
+      ],
+    },
+  },
   {
     title: "Lucky in Love",
     date: "February 2026",

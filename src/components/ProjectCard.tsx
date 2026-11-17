@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { StaticImageData } from "next/image";
 import DoodleScroll from "@/components/DoodleScroll";
 import ScribbleLink from "@/components/ScribbleLink";
 import TechTag from "@/components/TechTag";
@@ -10,6 +11,7 @@ import type { Project } from "@/data/portfolio";
 // A project card. Clicking anywhere on it (except its links) opens the case study popup.
 export default function ProjectCard({ project: p }: { project: Project }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [shot, setShot] = useState<number | null>(null); // gallery screenshot shown enlarged
   const titleId = `case-study-${p.title.replace(/\W+/g, "-").toLowerCase()}`;
 
   const open = () => dialogRef.current?.showModal();
@@ -140,10 +142,130 @@ export default function ProjectCard({ project: p }: { project: Project }) {
                 <Links project={p} />
               </div>
             </div>
+
+            {p.caseStudy.gallery && (
+              <>
+                <CaseHeading className="mt-8">More screenshots</CaseHeading>
+                <ul className="mt-3 grid gap-5 sm:grid-cols-2">
+                  {p.caseStudy.gallery.map((g, i) => (
+                    <li key={g.caption}>
+                      {/* opens the screenshot enlarged on top of the case study */}
+                      <button
+                        type="button"
+                        onClick={() => setShot(i)}
+                        aria-label={`Enlarge: ${g.caption}`}
+                        className="group/shot block w-full text-left"
+                      >
+                        <Image
+                          src={g.image}
+                          alt={g.caption}
+                          sizes="(min-width: 960px) 26rem, 100vw"
+                          placeholder="blur"
+                          className="aspect-video w-full rounded-md border-2 border-ink bg-white object-cover object-left-top transition-transform group-hover/shot:-translate-y-0.5"
+                        />
+                        <span className="font-hand mt-1 block text-lg leading-snug text-ink-soft">{g.caption} ⤢</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <Lightbox shots={p.caseStudy.gallery} index={shot} onChange={setShot} />
+              </>
+            )}
           </DoodleScroll>
         </div>
       </dialog>
     </li>
+  );
+}
+
+// An enlarged gallery screenshot, opened as a second popup on top of the case study.
+// Closes with ✕, Escape or a click outside the frame (which returns to the case study);
+// ‹ › buttons and the arrow keys move between screenshots.
+function Lightbox({
+  shots,
+  index,
+  onChange,
+}: {
+  shots: { image: StaticImageData; caption: string }[];
+  index: number | null;
+  onChange: (i: number | null) => void;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const d = ref.current;
+    if (!d) return;
+    if (index !== null && !d.open) d.showModal();
+    if (index === null && d.open) d.close();
+  }, [index]);
+
+  const go = (step: number) => index !== null && onChange((index + step + shots.length) % shots.length);
+  const current = index !== null ? shots[index] : null;
+
+  return (
+    <dialog
+      ref={ref}
+      aria-label="Screenshot"
+      className="doodle-dialog"
+      onClose={() => onChange(null)} // Escape closes only this popup
+      onClick={(e) => e.target === e.currentTarget && onChange(null)}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowRight") go(1);
+        if (e.key === "ArrowLeft") go(-1);
+      }}
+    >
+      {current && (
+        <figure className="doodle-box w-[min(80rem,calc(100vw-2rem))] px-5 pt-4 pb-5 md:px-7">
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <figcaption className="font-hand text-2xl leading-tight">{current.caption}</figcaption>
+            <div className="flex shrink-0 items-center gap-4">
+              {shots.length > 1 && (
+                <span className="text-base text-ink-soft">
+                  {index! + 1} / {shots.length}
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => onChange(null)}
+                aria-label="Close screenshot"
+                className="font-hand text-3xl leading-none"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          {/* From md up the arrows sit beside the image, outside it; on phones they
+              wrap into a row under it. `order` puts the image first on phones. */}
+          <div className="flex flex-wrap items-center justify-between gap-3 md:flex-nowrap md:gap-4">
+            {shots.length > 1 && <LightboxArrow side="left" onClick={() => go(-1)} />}
+            <div className="order-first w-full min-w-0 md:order-none md:w-auto md:flex-1">
+              <Image
+                src={current.image}
+                alt={current.caption}
+                sizes="(min-width: 1280px) 74rem, 100vw"
+                placeholder="blur"
+                className="mx-auto max-h-[calc(100svh-9rem)] w-auto rounded-md border-2 border-ink bg-white object-contain"
+              />
+            </div>
+            {shots.length > 1 && <LightboxArrow side="right" onClick={() => go(1)} />}
+          </div>
+        </figure>
+      )}
+    </dialog>
+  );
+}
+
+function LightboxArrow({ side, onClick }: { side: "left" | "right"; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={side === "left" ? "Previous screenshot" : "Next screenshot"}
+      className={`doodle-btn shrink-0 px-3 py-0 text-3xl ${side === "right" ? "alt" : ""}`}
+    >
+      {side === "left" ? "‹" : "›"}
+    </button>
   );
 }
 
