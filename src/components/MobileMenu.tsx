@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ScribbleLink from "@/components/ScribbleLink";
 
 type Props = {
   links: { href: string; label: string }[];
@@ -58,23 +57,25 @@ export default function MobileMenu({ links, resume }: Props) {
 
       {open && (
         <div id="mobile-menu" className="absolute inset-x-4 top-full mt-3">
-          <ul className="doodle-box grid gap-1 px-6 py-5">
+          {/* Plain links and a still card: on touch screens a tap counts as a hover,
+              so the scribble/jitter effects would only flash before the page scrolls away */}
+          <ul className="doodle-box doodle-still grid gap-1 px-6 py-5">
             {links.map((l) => (
               <li key={l.href}>
-                <ScribbleLink href={l.href} onClick={close} className="font-hand block py-1 text-3xl">
+                <a href={l.href} onClick={close} className="font-hand block py-1 text-3xl">
                   {l.label}
-                </ScribbleLink>
+                </a>
               </li>
             ))}
             <li className="mt-2 border-t-2 border-dashed border-(--ink-soft)/40 pt-3">
-              <ScribbleLink
+              <a
                 href={resume.href}
                 download={resume.fileName}
                 onClick={close}
                 className="font-hand block py-1 text-3xl font-bold"
               >
                 Download resume ↓
-              </ScribbleLink>
+              </a>
             </li>
           </ul>
         </div>
