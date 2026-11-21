@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Caveat, Patrick_Hand } from "next/font/google";
 import DoodleFilters from "@/components/DoodleFilters";
 import "./globals.css";
@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   title: "Dominic Delfin | Portfolio",
   description:
     "Portfolio of Dominic Delfin, software engineer: projects, experience, education, skills and certifications.",
+};
+
+// Tints the mobile browser's toolbar to the paper color so it blends with the page
+export const viewport: Viewport = {
+  themeColor: "#f5eedc",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

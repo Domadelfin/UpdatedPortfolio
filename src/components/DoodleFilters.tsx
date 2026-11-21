@@ -1,12 +1,10 @@
 // Hidden SVG filters used by the .doodle-* classes in globals.css.
 // Each one slightly displaces straight lines so borders look hand-drawn.
-// "doodle-wobble" is the resting look; the -2/-3 variants use different noise seeds
-// and are cycled through when a .doodle-box card is hovered, making the outline jitter.
-const filters = [
-  { id: "doodle-wobble", seed: 3 },
-  { id: "doodle-wobble-2", seed: 8 },
-  { id: "doodle-wobble-3", seed: 15 },
-];
+//
+// Performance: these filters are drawn on the CPU for every element that uses them,
+// so they're kept cheap. One octave of noise looks the same as two at this small
+// displacement, and sRGB skips a color-space conversion on every pixel.
+const filters = [{ id: "doodle-wobble", seed: 3 }];
 
 export default function DoodleFilters() {
   return (
@@ -17,11 +15,11 @@ export default function DoodleFilters() {
       style={{ position: "absolute" }}
     >
       {filters.map((f) => (
-        <filter key={f.id} id={f.id}>
+        <filter key={f.id} id={f.id} colorInterpolationFilters="sRGB">
           <feTurbulence
             type="fractalNoise"
             baseFrequency="0.03"
-            numOctaves="2"
+            numOctaves="1"
             seed={f.seed}
             result="noise"
           />

@@ -22,6 +22,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Also paint the outermost layer: iOS Safari shows it when you bounce past
+     the top or bottom of the page, which was white before. */
+  background-color: var(--paper);
 }
 
 /* Laptop-sized screens: scale the whole design down a notch.
@@ -47,6 +50,25 @@ html {
   min-height: 100svh;
   padding-top: calc(var(--nav-h) + 2rem);
   padding-bottom: 2rem;
+}
+
+/* Phones: roomier cards. A slightly narrower page margin gives the cards more
+   width, and the cards get more padding, especially top and bottom. These rules
+   are deliberately outside any @layer so they win over the per-card padding
+   utilities (px-7, py-6, ...). Popups keep their own padding. */
+@media (max-width: 639px) {
+  .page-section {
+    padding-inline: 1.25rem;
+  }
+
+  .page-section .doodle-box:not(.doodle-dialog .doodle-box) {
+    padding: 2rem 1.5rem;
+  }
+
+  .page-section .doodle-tilt,
+  .page-section ol {
+    row-gap: 2.5rem;
+  }
 }
 
 body {
@@ -127,19 +149,25 @@ body {
   }
 
   /* ---------- Line boil ----------
-     On hover a card's outline flips between differently-seeded wobble filters,
-     like the jittery outlines in hand-drawn animation. */
+     On hover a card's outline jitters, like the shaky outlines in hand-drawn
+     animation. The two strokes jump between slightly different positions in
+     opposite directions. Only translate/rotate change, which the GPU handles
+     without redrawing; the earlier version swapped filters and redrew the whole
+     card about 8 times a second while hovered. */
   .doodle-box:hover::before,
-  .doodle-box:hover::after,
-  .doodle-box:focus-within::before,
-  .doodle-box:focus-within::after {
+  .doodle-box:focus-within::before {
     animation: doodle-boil 0.36s steps(1) infinite;
   }
 
+  .doodle-box:hover::after,
+  .doodle-box:focus-within::after {
+    animation: doodle-boil 0.36s steps(1) infinite reverse;
+  }
+
   @keyframes doodle-boil {
-    0%      { filter: url(#doodle-wobble); }
-    33.33%  { filter: url(#doodle-wobble-2); }
-    66.67%  { filter: url(#doodle-wobble-3); }
+    0%      { translate: 0 0;           rotate: 0deg; }
+    33.33%  { translate: 0.7px -0.6px;  rotate: 0.15deg; }
+    66.67%  { translate: -0.6px 0.6px;  rotate: -0.12deg; }
   }
 
   /* No jitter while the email form is open: neither on the form's own card
