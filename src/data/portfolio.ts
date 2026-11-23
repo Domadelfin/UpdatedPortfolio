@@ -10,6 +10,11 @@ import samahanShot from "@/app/Images/OTM-Samahan.png";
 import luckyInLoveShot from "@/app/Images/SpeedDating.png";
 import univentsShot from "@/app/Images/Univents.png";
 import wifiShot from "@/app/Images/Wifi Occupancy Prediction.png";
+// Smiley (Face-Detector repo): stills taken from the demo GIFs, which are
+// served as small MP4s from /public/videos/face-detector instead of 10+ MB GIFs.
+import smileyRaw from "@/app/Images/Face Detector/raw-smile.jpg";
+import smileyThumb from "@/app/Images/Face Detector/thumbnail.jpg"; // 16:9 crop centered on the face
+import smileySmoothed from "@/app/Images/Face Detector/smoothed-smile.jpg";
 // Job Tracker on AWS. Account IDs in these screenshots are already blacked out.
 import jtApp from "@/app/Images/Job Tracker/01-app-via-alb.png";
 import jtEcs from "@/app/Images/Job Tracker/02-ecs-cluster-services.png";
@@ -36,6 +41,8 @@ export type Experience = {
   highlights: string[];
 };
 
+export type GalleryItem = { image: StaticImageData; caption: string; video?: string };
+
 export type Project = {
   title: string;
   date: string;
@@ -53,8 +60,9 @@ export type Project = {
     decisions?: string[];
     // Measurable outcomes. The first one is also shown on the card, so keep it short.
     results?: string[];
-    // Extra screenshots shown at the bottom of the case study
-    gallery?: { image: StaticImageData; caption: string }[];
+    // Extra screenshots shown at the bottom of the case study. With `video`
+    // (a path under /public), `image` is its still/poster and the video plays when enlarged.
+    gallery?: GalleryItem[];
   };
 };
 
@@ -170,6 +178,48 @@ export const experience: Experience[] = [
 
 // Newest first.
 export const projects: Project[] = [
+  {
+    title: "Smiley: Real-Time Smile Detection",
+    date: "November 2026",
+    role: "Solo · Computer vision",
+    image: smileyThumb,
+    summary:
+      "A webcam app that finds your face and tells you whether you're smiling, built step by step in Python with OpenCV. I tested each step to see where the detectors fail, then added smoothing so the box and label stay steady instead of flickering.",
+    tech: ["Python", "OpenCV", "NumPy"],
+    repoUrl: "https://github.com/Domadelfin/Face-Detector",
+    caseStudy: {
+      problem:
+        "I wanted to understand computer vision from the ground up before moving on to emotion recognition: how a program finds a face in a webcam feed, decides whether it's smiling, and stays stable from one frame to the next.",
+      contributions: [
+        "Built it in six steps, each a separate script that adds one idea, from the raw webcam loop to smoothing",
+        "Detected faces with a Haar cascade, then searched for a smile only in the bottom half of the face, where the mouth is",
+        "Searched for eyes only in the top half, which removed false detections on the mouth and nostrils",
+        "Smoothed the results over time: a moving average for the box, a grace period for missed frames, and majority voting for the label",
+        "Tested each step to find where the detectors fail, and documented what I learned",
+      ],
+      decisions: [
+        "Tuned each detector's sensitivity by hand (minNeighbors 35 for smiles in my setup), trading missed detections against false ones",
+        "Kept the pipeline in three stages (get the image, find the face, interpret it) so emotion recognition only has to replace the last one",
+        "Chose smoothing settings that balance a steady display against lag when I move or change expression",
+      ],
+      results: [
+        "A steady box and label instead of frame-to-frame flicker",
+        "Documented its limits: frontal faces only, photos count as faces, and an open mouth counts as a smile",
+      ],
+      gallery: [
+        {
+          image: smileyRaw,
+          video: "/videos/face-detector/raw_smile.mp4",
+          caption: "Raw detection: the box jitters and the label reacts to every frame",
+        },
+        {
+          image: smileySmoothed,
+          video: "/videos/face-detector/smoothed_smile.mp4",
+          caption: "Smoothed: a steady box whose color only changes once most frames agree",
+        },
+      ],
+    },
+  },
   {
     title: "Job Tracker on AWS",
     date: "November 2026",

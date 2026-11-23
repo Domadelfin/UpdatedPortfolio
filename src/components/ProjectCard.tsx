@@ -2,11 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { StaticImageData } from "next/image";
 import DoodleScroll from "@/components/DoodleScroll";
 import ScribbleLink from "@/components/ScribbleLink";
 import TechTag from "@/components/TechTag";
-import type { Project } from "@/data/portfolio";
+import type { GalleryItem, Project } from "@/data/portfolio";
 
 // A project card. Clicking anywhere on it (except its links) opens the case study popup.
 export default function ProjectCard({ project: p }: { project: Project }) {
@@ -145,7 +144,9 @@ export default function ProjectCard({ project: p }: { project: Project }) {
 
             {p.caseStudy.gallery && (
               <>
-                <CaseHeading className="mt-8">More screenshots</CaseHeading>
+                <CaseHeading className="mt-8">
+                  {p.caseStudy.gallery.some((g) => g.video) ? "See it in action" : "More screenshots"}
+                </CaseHeading>
                 <ul className="mt-3 grid gap-5 sm:grid-cols-2">
                   {p.caseStudy.gallery.map((g, i) => (
                     <li key={g.caption}>
@@ -156,14 +157,24 @@ export default function ProjectCard({ project: p }: { project: Project }) {
                         aria-label={`Enlarge: ${g.caption}`}
                         className="group/shot block w-full text-left"
                       >
-                        <Image
-                          src={g.image}
-                          alt={g.caption}
-                          sizes="(min-width: 960px) 26rem, 100vw"
-                          placeholder="blur"
-                          className="aspect-video w-full rounded-md border-2 border-ink bg-white object-cover object-left-top transition-transform group-hover/shot:-translate-y-0.5"
-                        />
-                        <span className="font-hand mt-1 block text-lg leading-snug text-ink-soft">{g.caption} ⤢</span>
+                        <span className="relative block transition-transform group-hover/shot:-translate-y-0.5">
+                          <Image
+                            src={g.image}
+                            alt={g.caption}
+                            sizes="(min-width: 960px) 26rem, 100vw"
+                            placeholder="blur"
+                            className="aspect-video w-full rounded-md border-2 border-ink bg-white object-cover object-top"
+                          />
+                          {/* videos only load once enlarged; the badge says there's something to play */}
+                          {g.video && (
+                            <span className="doodle-btn absolute top-1/2 left-1/2 -translate-1/2 px-4 py-0.5 text-2xl">
+                              ▶ play
+                            </span>
+                          )}
+                        </span>
+                        <span className="font-hand mt-1 block text-lg leading-snug text-ink-soft">
+                          {g.caption} {g.video ? "" : "⤢"}
+                        </span>
                       </button>
                     </li>
                   ))}
@@ -186,7 +197,7 @@ function Lightbox({
   index,
   onChange,
 }: {
-  shots: { image: StaticImageData; caption: string }[];
+  shots: GalleryItem[];
   index: number | null;
   onChange: (i: number | null) => void;
 }) {
@@ -240,13 +251,29 @@ function Lightbox({
           <div className="flex flex-wrap items-center justify-between gap-3 md:flex-nowrap md:gap-4">
             {shots.length > 1 && <LightboxArrow side="left" onClick={() => go(-1)} />}
             <div className="order-first w-full min-w-0 md:order-none md:w-auto md:flex-1">
-              <Image
-                src={current.image}
-                alt={current.caption}
-                sizes="(min-width: 1280px) 74rem, 100vw"
-                placeholder="blur"
-                className="mx-auto max-h-[calc(100svh-9rem)] w-auto rounded-md border-2 border-ink bg-white object-contain"
-              />
+              {current.video ? (
+                // key restarts the clip when switching between videos
+                <video
+                  key={current.video}
+                  src={current.video}
+                  poster={current.image.src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  controls
+                  aria-label={current.caption}
+                  className="mx-auto max-h-[calc(100svh-9rem)] w-auto rounded-md border-2 border-ink bg-white"
+                />
+              ) : (
+                <Image
+                  src={current.image}
+                  alt={current.caption}
+                  sizes="(min-width: 1280px) 74rem, 100vw"
+                  placeholder="blur"
+                  className="mx-auto max-h-[calc(100svh-9rem)] w-auto rounded-md border-2 border-ink bg-white object-contain"
+                />
+              )}
             </div>
             {shots.length > 1 && <LightboxArrow side="right" onClick={() => go(1)} />}
           </div>
